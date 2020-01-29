@@ -23,6 +23,7 @@ BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
 # Symlink into GOPATH
 GITHUB_USERNAME=theovassiliou
 BUILD_DIR=${GOPATH}/src/github.com/${GITHUB_USERNAME}/${BINARY}
+BIN_DIR=${BUILD_DIR}/bin
 CURRENT_DIR=$(shell pwd)
 BUILD_DIR_LINK=$(shell readlink ${BUILD_DIR})
 
@@ -30,32 +31,34 @@ BUILD_DIR_LINK=$(shell readlink ${BUILD_DIR})
 LDFLAGS = -ldflags "-X main.version=${VERSION} -X main.commit=${COMMIT} -X main.branch=${BRANCH}"
 
 # Build the project
-all: clean test vet linux darwin windows
+all: clean build test vet static
 
-link:
-	BUILD_DIR=${BUILD_DIR}; \
-	BUILD_DIR_LINK=${BUILD_DIR_LINK}; \
-	CURRENT_DIR=${CURRENT_DIR}; \
+build: 
+	cd ${BUILD_DIR}; \
+	go build shop.go ; \
+	cd - >/dev/null
+
+static: linux darwin windows
 
 linux: 
 	cd ${BUILD_DIR}; \
-	GOOS=linux GOARCH=${GOARCH} go build ${LDFLAGS} -o ${BINARY}-linux-${GOARCH} . ; \
+	GO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build ${LDFLAGS} -o ${BIN_DIR}/${BINARY}-linux-${GOARCH} . ; \
 	cd - >/dev/null
 
 darwin:
 	cd ${BUILD_DIR}; \
-	GOOS=darwin GOARCH=${GOARCH} go build ${LDFLAGS} -o ${BINARY}-darwin-${GOARCH} . ; \
+	GO_ENABLED=0 GOOS=darwin GOARCH=${GOARCH} go build ${LDFLAGS} -o ${BIN_DIR}/${BINARY}-darwin-${GOARCH} . ; \
 	cd - >/dev/null
 
 windows:
 	cd ${BUILD_DIR}; \
-	GOOS=windows GOARCH=${GOARCH} go build ${LDFLAGS} -o ${BINARY}-windows-${GOARCH}.exe . ; \
+	GO_ENABLED=0 GOOS=windows GOARCH=${GOARCH} go build ${LDFLAGS} -o ${BIN_DIR}/${BINARY}-windows-${GOARCH}.exe . ; \
 	cd - >/dev/null
 
 test:
 	if ! hash go2xunit 2>/dev/null; then go install github.com/tebeka/go2xunit; fi
 	cd ${BUILD_DIR}; \
-	godep go test -v ./... 2>&1 | go2xunit -output ${TEST_REPORT} ; \
+	go test -v ./... 2>&1 | go2xunit -output ${TEST_REPORT} ; \
 	cd - >/dev/null
 
 vet:
@@ -71,6 +74,6 @@ fmt:
 clean:
 	-rm -f ${TEST_REPORT}
 	-rm -f ${VET_REPORT}
-	-rm -f ${BINARY}-*
+	-rm -f ${BIN_DIR}/${BINARY}-*
 
-.PHONY: linux darwin windows test vet fmt clean
+.PHONY: static test vet fmt clean build
