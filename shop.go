@@ -25,7 +25,7 @@ var VERSION = "0.0" + version + "-src"
 
 type config struct {
 	DropBoxDir string    `help:"Directory with ShopShop lists"`
-	FileName   string    `help:"ShopShop filename, without dir"`
+	ListName   string    `help:"ShopShop listname"`
 	LogLevel   log.Level `help:"Log level, one of panic, fatal, error, warn or warning, info, debug, trace"`
 }
 
@@ -149,7 +149,7 @@ func main() {
 	conf = config{
 		LogLevel:   log.DebugLevel,
 		DropBoxDir: "$HOME/Dropbox/ShopShop/",
-		FileName:   "Lidl2.shopshop",
+		ListName:   "Lidl2",
 	}
 
 	//parse config
@@ -174,7 +174,7 @@ func main() {
 			opts.New(&interact{}).
 				Summary(interactUsage)).Parse()
 
-	fileName = path.Join(os.ExpandEnv(conf.DropBoxDir), conf.FileName)
+	fileName = path.Join(os.ExpandEnv(conf.DropBoxDir), conf.ListName+".shopshop")
 
 	log.SetLevel(conf.LogLevel)
 	fi, err := os.Open(fileName)
