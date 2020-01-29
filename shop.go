@@ -177,7 +177,7 @@ func main() {
 	conf = config{
 		LogLevel:   log.DebugLevel,
 		DropBoxDir: "$HOME/Dropbox/ShopShop/",
-		ListName:   "Lidl2",
+		ListName:   "Grocery",
 	}
 
 	//parse config
