@@ -23,7 +23,7 @@ type Basket struct {
 func (sl *Basket) Save() {
 	shoppingJSON, _ := json.MarshalIndent(sl, "", "  ")
 	err := ioutil.WriteFile(sl.fileName, shoppingJSON, 0644)
-	AssertNoError(err)
+	AssertNoErrorFatal(err)
 }
 
 // FileName returns the fileName where the basket is stored

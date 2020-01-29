@@ -42,6 +42,7 @@ const rmUsage = "Removes an item at index position from list"
 func (cmd *rm) Run() {
 	shoppingList.Remove(cmd.Indices)
 	shoppingList.Save()
+	shoppingList.List()
 }
 
 type add struct {
@@ -54,6 +55,7 @@ const addUsage = "Adds an item to the shopping list"
 func (cmd *add) Run() {
 	shoppingList.AddItem(cmd.Quantity, cmd.ItemDescription)
 	shoppingList.Save()
+	shoppingList.List()
 }
 
 func execute(shoppingList *shop.Basket, line []string) {
@@ -61,6 +63,7 @@ func execute(shoppingList *shop.Basket, line []string) {
 	switch cmd {
 	case "rm", "remove":
 		(&rm{Indices: line[1:]}).Run()
+		(&ls{}).Run()
 	case "add", "buy":
 		count := ""
 		i := 1
@@ -69,10 +72,13 @@ func execute(shoppingList *shop.Basket, line []string) {
 			count = line[1]
 		}
 		(&add{ItemDescription: line[i:], Quantity: count}).Run()
+		(&ls{}).Run()
 	case "checkout", "co":
 		(&co{}).Run()
+		(&ls{}).Run()
 	case "list", "ls":
 		(&ls{}).Run()
+		return
 	case "help":
 		fmt.Println(`Commands:
   add [#] ...   add [quantity] item
@@ -81,9 +87,9 @@ func execute(shoppingList *shop.Basket, line []string) {
 	default:
 		fmt.Println("Unknown command:", cmd)
 		fmt.Println("Use 'help' for help")
+		(&ls{}).Run()
 		return
 	}
-	(&ls{}).Run()
 }
 
 type interact struct {
@@ -132,6 +138,7 @@ const coUsage = "Checkout (removes done items) from list"
 func (cmd *co) Run() {
 	shoppingList.Checkout()
 	shoppingList.Save()
+	shoppingList.List()
 }
 
 var fileName string
@@ -180,9 +187,9 @@ func main() {
 	shop.AssertNoError(err)
 	shoppingList.SetFileName(fileName)
 
-	cmd.Run()
-
-	shoppingList.Save()
-
-	(&ls{}).Run()
+	if cmd.IsRunnable() {
+		cmd.Run()
+	} else {
+		shoppingList.List()
+	}
 }

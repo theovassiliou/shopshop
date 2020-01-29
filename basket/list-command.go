@@ -1,6 +1,8 @@
 package shopshop
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // List all items of the basket to stdout
 func (sl *Basket) List() {
