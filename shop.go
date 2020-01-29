@@ -18,10 +18,14 @@ import (
 )
 
 //set this via ldflags (see https://stackoverflow.com/q/11354518)
-var version = ".1"
+const pVersion = ".1"
 
-// VERSION is the current version number.
-var VERSION = "0.0" + version + "-src"
+// version is the current version number as tagged via git tag 1.0.0 -m 'A message'
+var (
+	version = "1.0" + pVersion + "-src"
+	commit  string
+	branch  string
+)
 
 type config struct {
 	DropBoxDir string    `help:"Directory with ShopShop lists"`
@@ -144,6 +148,30 @@ func (cmd *co) Run() {
 var fileName string
 var shoppingList *shop.Basket
 
+// FormatFullVersion formats for a cmdName the version number based on version, branch and commit
+func FormatFullVersion(cmdName, version, branch, commit string) string {
+	var parts = []string{cmdName}
+
+	if version != "" {
+		parts = append(parts, version)
+	} else {
+		parts = append(parts, "unknown")
+	}
+
+	if branch != "" || commit != "" {
+		if branch == "" {
+			branch = "unknown"
+		}
+		if commit == "" {
+			commit = "unknown"
+		}
+		git := fmt.Sprintf("(git: %s %s)", branch, commit)
+		parts = append(parts, git)
+	}
+
+	return strings.Join(parts, " ")
+}
+
 func main() {
 
 	conf = config{
@@ -157,7 +185,7 @@ func main() {
 		New(&conf).
 		Summary(shortUsage).
 		PkgRepo().
-		Version(VERSION).
+		Version(FormatFullVersion("shopshop", version, branch, commit)).
 		AddCommand(
 			opts.New(&add{}).
 				Summary(addUsage)).
