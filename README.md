@@ -122,7 +122,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Thanks to all the people out there that produce amazing open-source software, which supported the creation of this piece of software. In particular I wasn't only able to use libraries etc. But also, to learn and understand golang better. In particular I wanted to thank
 
-* [Nikolaj Schumacher](https://apps.apple.com/de/app/shopshop-einkaufsliste/id288350249) for ShopShop, the incredible usefull small little iOS app.
+* [Nikolaj Schumacher](https://apps.apple.com/de/developer/nikolaj-schumacher/id288350252) for ShopShop, the incredible usefull small little iOS app.
 * [Jaime Pillora](https://github.com/jpillora) for [jpillora/opts](https://github.com/jpillora/opts). Nice piece of work!
 * [Simon Eskildsen](https://github.com/sirupsen) for  [sirupsen/logrus](https://github.com/sirupsen/logrus), which I continously use.
 * [PurpleBooth](https://gist.github.com/PurpleBooth) for the well motivated [README-template](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
