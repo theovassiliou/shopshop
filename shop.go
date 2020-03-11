@@ -63,21 +63,17 @@ func (cmd *add) Run() {
 func isQuantity(word string) (bool, string) {
 	// quantity has the form 400g or 400 or 2cl
 	// but not 400g500 or gr400
-	quantity := ""
-	var isQ bool
 
 	for i := len(word); i > 0; i-- {
 		if _, err := strconv.Atoi(word[:i]); err == nil {
-			isQ = true
-			quantity = word
-			break
+			return true, word
 		}
 		if _, err := strconv.Atoi(word[i-1:]); err == nil {
-			break
+			return false, ""
 		}
 	}
 
-	return isQ, quantity
+	return false, ""
 }
 
 func execute(shoppingList *shop.Basket, words []string) {
@@ -93,9 +89,10 @@ func execute(shoppingList *shop.Basket, words []string) {
 			i = 2
 			quantity = q
 		}
-
 		(&add{ItemDescription: words[i:], Quantity: quantity}).Run()
 		(&ls{}).Run()
+	case "query", "q":
+		(&query{}).Run()
 	case "checkout", "co":
 		(&co{}).Run()
 		(&ls{}).Run()
