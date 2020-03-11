@@ -132,6 +132,14 @@ func (cmd *ls) Run() {
 	shoppingList.List()
 }
 
+type query struct{}
+
+const queryUsage = "Shows a list of all shopping lists"
+
+func (cmd *query) Run() {
+	shoppingList.Query(conf.DropBoxDir)
+}
+
 type co struct{}
 
 const coUsage = "Checkout (removes done items) from list"
@@ -189,6 +197,9 @@ func main() {
 		AddCommand(
 			opts.New(&ls{}).
 				Summary(lsUsage)).
+		AddCommand(
+			opts.New(&query{}).
+				Summary(queryUsage)).
 		AddCommand(
 			opts.New(&rm{}).
 				Summary(rmUsage)).
