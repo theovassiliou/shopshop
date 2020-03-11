@@ -21,7 +21,12 @@ func (sl *Basket) Query(dir string) {
 
 	for _, f := range files {
 		if path.Ext(f.Name()) == ".shopshop" {
-			fmt.Printf("  %s\n", strings.TrimSuffix(f.Name(), path.Ext(f.Name())))
+			listName := strings.TrimSuffix(f.Name(), path.Ext(f.Name()))
+			if listName == sl.ListName() {
+				fmt.Printf("* %s\n", listName)
+			} else {
+				fmt.Printf("  %s\n", listName)
+			}
 		}
 	}
 
