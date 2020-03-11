@@ -18,7 +18,7 @@ import (
 )
 
 //set this via ldflags (see https://stackoverflow.com/q/11354518)
-const pVersion = ".1"
+const pVersion = ".2"
 
 // version is the current version number as tagged via git tag 1.0.0 -m 'A message'
 var (
@@ -135,6 +135,14 @@ func (cmd *ls) Run() {
 	shoppingList.List()
 }
 
+type query struct{}
+
+const queryUsage = "Shows a list of all shopping lists"
+
+func (cmd *query) Run() {
+	shoppingList.Query(conf.DropBoxDir)
+}
+
 type co struct{}
 
 const coUsage = "Checkout (removes done items) from list"
@@ -192,6 +200,9 @@ func main() {
 		AddCommand(
 			opts.New(&ls{}).
 				Summary(lsUsage)).
+		AddCommand(
+			opts.New(&query{}).
+				Summary(queryUsage)).
 		AddCommand(
 			opts.New(&rm{}).
 				Summary(rmUsage)).
