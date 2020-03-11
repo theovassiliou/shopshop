@@ -60,20 +60,41 @@ func (cmd *add) Run() {
 	shoppingList.Save()
 }
 
-func execute(shoppingList *shop.Basket, line []string) {
-	cmd := line[0]
+func isQuantity(word string) (bool, string) {
+	// quantity has the form 400g or 400 or 2cl
+	// but not 400g500 or gr400
+	quantity := ""
+	var isQ bool
+
+	for i := len(word); i > 0; i-- {
+		if _, err := strconv.Atoi(word[:i]); err == nil {
+			isQ = true
+			quantity = word
+			break
+		}
+		if _, err := strconv.Atoi(word[i-1:]); err == nil {
+			break
+		}
+	}
+
+	return isQ, quantity
+}
+
+func execute(shoppingList *shop.Basket, words []string) {
+	cmd := words[0]
 	switch cmd {
 	case "rm", "remove":
-		(&rm{Indices: line[1:]}).Run()
+		(&rm{Indices: words[1:]}).Run()
 		(&ls{}).Run()
 	case "add", "buy":
-		count := ""
+		quantity := ""
 		i := 1
-		if _, err := strconv.Atoi(line[1]); err == nil {
+		if isQuantity, q := isQuantity(words[1]); isQuantity {
 			i = 2
-			count = line[1]
+			quantity = q
 		}
-		(&add{ItemDescription: line[i:], Quantity: count}).Run()
+
+		(&add{ItemDescription: words[i:], Quantity: quantity}).Run()
 		(&ls{}).Run()
 	case "checkout", "co":
 		(&co{}).Run()
