@@ -3,6 +3,8 @@ package shopshop
 import (
 	"encoding/json"
 	"io/ioutil"
+	"path"
+	"strings"
 )
 
 // Item models an item in a shopping basket
@@ -29,6 +31,10 @@ func (sl *Basket) Save() {
 // FileName returns the fileName where the basket is stored
 func (sl *Basket) FileName() string {
 	return sl.fileName
+}
+
+func (sl *Basket) ListName() string {
+	return path.Base(strings.TrimSuffix(sl.FileName(), path.Ext(sl.FileName())))
 }
 
 // SetFileName set the filenName of the basket

@@ -76,7 +76,7 @@ func isQuantity(word string) (bool, string) {
 	return false, ""
 }
 
-func execute(shoppingList *shop.Basket, words []string) {
+func execute(sb *shop.Basket, words []string) *shop.Basket {
 	cmd := words[0]
 	switch cmd {
 	case "rm", "remove":
@@ -92,23 +92,38 @@ func execute(shoppingList *shop.Basket, words []string) {
 		(&add{ItemDescription: words[i:], Quantity: quantity}).Run()
 		(&ls{}).Run()
 	case "query", "q":
+		if len(words) > 1 {
+			newListFilename := path.Join(os.ExpandEnv(conf.DropBoxDir), words[1]+".shopshop")
+			fi, err := os.Open(newListFilename)
+			b, err := ioutil.ReadAll(fi)
+
+			shop.AssertNoError(err)
+
+			newSl := new(shop.Basket)
+			err = json.Unmarshal(b, newSl)
+			shop.AssertNoError(err)
+			newSl.SetFileName(newListFilename)
+			return newSl
+		}
 		(&query{}).Run()
+
 	case "checkout", "co":
 		(&co{}).Run()
 		(&ls{}).Run()
 	case "list", "ls":
 		(&ls{}).Run()
-		return
 	case "help":
 		fmt.Println(`Commands:
   add [#] ...   add [quantity] item
   rm # [#]+     remove item(s) at index #
-  co            checkout (remove done items)`)
+  co            checkout (remove done items)
+  query [#]     query for all lists or change to list #`)
 	default:
 		fmt.Println("Unknown command:", cmd)
 		fmt.Println("Use 'help' for help")
 		(&ls{}).Run()
 	}
+	return sb
 }
 
 type interact struct {
@@ -130,7 +145,7 @@ func (c *interact) Run() {
 			}
 			l := strings.Split(line[:len(line)-1], " ")
 			if len(l) > 0 {
-				execute(shoppingList, l)
+				shoppingList = execute(shoppingList, l)
 			}
 		case io.EOF:
 			fmt.Println()
