@@ -47,11 +47,12 @@ shopshop -h
   --help, -h          display help
 
   Commands:
+  · add       Adds an item to the shopping list
+  · ls        List the shopshop list
+  · query     Shows a list of all shopping lists
   · rm        Removes an item at index position from list
   · co        Checkout (removes done items) from list
   · interact  interactive mode
-  · add       Adds an item to the shopping list
-  · ls        List the shopshop list
 
   Version:
     shopshop 1.0.0 (git: master 824843e)
