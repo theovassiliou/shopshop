@@ -18,7 +18,7 @@ import (
 )
 
 //set this via ldflags (see https://stackoverflow.com/q/11354518)
-const pVersion = ".1"
+const pVersion = ".2"
 
 // version is the current version number as tagged via git tag 1.0.0 -m 'A message'
 var (
@@ -46,7 +46,6 @@ const rmUsage = "Removes an item at index position from list"
 func (cmd *rm) Run() {
 	shoppingList.Remove(cmd.Indices)
 	shoppingList.Save()
-	shoppingList.List()
 }
 
 type add struct {
@@ -59,7 +58,6 @@ const addUsage = "Adds an item to the shopping list"
 func (cmd *add) Run() {
 	shoppingList.AddItem(cmd.Quantity, cmd.ItemDescription)
 	shoppingList.Save()
-	shoppingList.List()
 }
 
 func execute(shoppingList *shop.Basket, line []string) {
@@ -92,7 +90,6 @@ func execute(shoppingList *shop.Basket, line []string) {
 		fmt.Println("Unknown command:", cmd)
 		fmt.Println("Use 'help' for help")
 		(&ls{}).Run()
-		return
 	}
 }
 
