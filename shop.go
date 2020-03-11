@@ -18,7 +18,7 @@ import (
 )
 
 //set this via ldflags (see https://stackoverflow.com/q/11354518)
-const pVersion = ".2"
+const pVersion = ".3"
 
 // version is the current version number as tagged via git tag 1.0.0 -m 'A message'
 var (
