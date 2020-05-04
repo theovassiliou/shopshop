@@ -251,7 +251,8 @@ func main() {
 
 	shop.AssertNoError(err)
 
-	shoppingList = new(shop.Basket)
+	shoppingList = shop.NewBasket()
+
 	err = json.Unmarshal(b, shoppingList)
 	shop.AssertNoError(err)
 	shoppingList.SetFileName(fileName)
