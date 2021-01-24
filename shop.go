@@ -116,6 +116,7 @@ func execute(sb *shop.Basket, words []string) *shop.Basket {
 		fmt.Println(`Commands:
   add [#] ...   add [quantity] item
   rm # [#]+     remove item(s) at index #
+  ls			list items in list
   co            checkout (remove done items)
   query [#]     query for all lists or change to list #`)
 	default:
@@ -251,7 +252,8 @@ func main() {
 
 	shop.AssertNoError(err)
 
-	shoppingList = new(shop.Basket)
+	shoppingList = shop.NewBasket()
+
 	err = json.Unmarshal(b, shoppingList)
 	shop.AssertNoError(err)
 	shoppingList.SetFileName(fileName)

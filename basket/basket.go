@@ -21,6 +21,12 @@ type Basket struct {
 	fileName     string
 }
 
+func NewBasket() (basket *Basket) {
+	basket = new(Basket)
+	basket.Color = []float64{1.0, 0.84, 0, 1}
+	return
+}
+
 // Save the basket at the basket's file name location in JSON format
 func (sl *Basket) Save() {
 	shoppingJSON, _ := json.MarshalIndent(sl, "", "  ")
