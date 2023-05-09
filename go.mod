@@ -1,6 +1,6 @@
 module github.com/theovassiliou/shopshop
 
-go 1.13
+go 1.20
 
 require (
 	github.com/hashicorp/errwrap v1.1.0 // indirect
