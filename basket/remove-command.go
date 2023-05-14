@@ -8,7 +8,7 @@ import (
 func isInIndices(ref int, indices []string) bool {
 	for _, index := range indices {
 		idx, err := strconv.Atoi(index)
-		if AssertNoError(err) {
+		if err == nil {
 			// continue here on no error
 			if ref == idx {
 				return true
