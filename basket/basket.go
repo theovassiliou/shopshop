@@ -3,6 +3,7 @@ package shopshop
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"path"
 	"strings"
 )
@@ -24,14 +25,17 @@ type Basket struct {
 func NewBasket() (basket *Basket) {
 	basket = new(Basket)
 	basket.Color = []float64{1.0, 0.84, 0, 1}
+	basket.ShoppingList = make([]Item, 0)
 	return
 }
 
 // Save the basket at the basket's file name location in JSON format
 func (sl *Basket) Save() {
-	shoppingJSON, _ := json.MarshalIndent(sl, "", "  ")
+	shoppingJSON, _ := json.MarshalIndent(sl, "", "	")
 	err := ioutil.WriteFile(sl.fileName, shoppingJSON, 0644)
-	AssertNoErrorFatal(err)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // FileName returns the fileName where the basket is stored
