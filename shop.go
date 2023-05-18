@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path"
 	"strings"
@@ -17,7 +16,7 @@ import (
 	shop "github.com/theovassiliou/shopshop/basket"
 )
 
-//set this via ldflags (see https://stackoverflow.com/q/11354518)
+// set this via ldflags (see https://stackoverflow.com/q/11354518)
 const pVersion = ".3"
 
 // version is the current version number as tagged via git tag 1.0.0 -m 'A message'
@@ -77,6 +76,10 @@ func isQuantity(word string) (bool, string) {
 }
 
 func execute(sb *shop.Basket, words []string) *shop.Basket {
+	var fi *os.File
+	var b []byte
+	var err error
+
 	cmd := words[0]
 	switch cmd {
 	case "rm", "remove":
@@ -94,14 +97,18 @@ func execute(sb *shop.Basket, words []string) *shop.Basket {
 	case "query", "q":
 		if len(words) > 1 {
 			newListFilename := path.Join(os.ExpandEnv(conf.DropBoxDir), words[1]+".shopshop")
-			fi, err := os.Open(newListFilename)
-			b, err := ioutil.ReadAll(fi)
-
-			shop.AssertNoError(err)
+			if fi, err = os.Open(newListFilename); err != nil {
+				log.Fatal(err)
+			}
+			if b, err = io.ReadAll(fi); err != nil {
+				log.Fatal(err)
+			}
 
 			newSl := new(shop.Basket)
-			err = json.Unmarshal(b, newSl)
-			shop.AssertNoError(err)
+			if err = json.Unmarshal(b, newSl); err != nil {
+				log.Fatal(err)
+			}
+
 			newSl.SetFileName(newListFilename)
 			return newSl
 		}
@@ -213,6 +220,8 @@ func FormatFullVersion(cmdName, version, branch, commit string) string {
 
 func main() {
 
+	var err error
+
 	conf = config{
 		LogLevel:   log.DebugLevel,
 		DropBoxDir: "$HOME/Dropbox/ShopShop/",
@@ -247,15 +256,24 @@ func main() {
 	fileName = path.Join(os.ExpandEnv(conf.DropBoxDir), conf.ListName+".shopshop")
 
 	log.SetLevel(conf.LogLevel)
-	fi, err := os.Open(fileName)
-	b, err := ioutil.ReadAll(fi)
+	var fi *os.File
+	var b []byte
 
-	shop.AssertNoError(err)
+	if fi, err = os.Open(fileName); err != nil {
+		log.Fatal(err)
+	}
+
+	if b, err = io.ReadAll(fi); err != nil {
+		log.Fatal(err)
+
+	}
 
 	shoppingList = shop.NewBasket()
 
 	err = json.Unmarshal(b, shoppingList)
-	shop.AssertNoError(err)
+	if err != nil {
+		log.Fatal(err)
+	}
 	shoppingList.SetFileName(fileName)
 
 	if cmd.IsRunnable() {
