@@ -17,15 +17,23 @@ type Item struct {
 
 // Basket models the shopping list
 type Basket struct {
-	Color        []float64 `json:"color"`
-	ShoppingList []Item    `json:"shoppingList"`
+	Color        []float64   `json:"color"`
+	ShoppingList Slice[Item] `json:"shoppingList"`
 	fileName     string
+}
+
+type Slice[T any] []T
+
+func (s Slice[T]) MarshalJSON() ([]byte, error) {
+	if s == nil {
+		return []byte(`[]`), nil
+	}
+	return json.Marshal([]T(s))
 }
 
 func NewBasket() (basket *Basket) {
 	basket = new(Basket)
 	basket.Color = []float64{1.0, 0.84, 0, 1}
-	basket.ShoppingList = make([]Item, 0)
 	return
 }
 
